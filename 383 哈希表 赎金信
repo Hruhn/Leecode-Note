@@ -1,0 +1,39 @@
+给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。
+
+如果可以，返回 true ；否则返回 false 。
+
+magazine 中的每个字符只能在 ransomNote 中使用一次。
+
+示例 1：
+输入：ransomNote = "a", magazine = "b"
+输出：false
+
+示例 2：
+输入：ransomNote = "aa", magazine = "ab"
+输出：false
+
+示例 3：
+输入：ransomNote = "aa", magazine = "aab"
+输出：true
+
+提示：
+1 <= ransomNote.length, magazine.length <= 105
+ransomNote 和 magazine 由小写英文字母组成
+
+哈希表法，时间复杂度o(m+n)，空间复杂度o(1):
+遍历magazine， 用一个大小为26的int数组记录每个小写字母出现的次数。遍历ransomNote，用数组中记录减去ransomNote中字母出现次数，若小于零则false。
+
+代码：
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        int records[26] = {0};
+        for(int i = 0; i < magazine.size(); i++){
+            records[magazine[i] - 'a']++;
+        }
+        for(int i = 0; i < ransomNote.size(); i++){
+            if(--records[ransomNote[i] - 'a'] < 0) return false;
+        }
+        return true;
+    }
+};
