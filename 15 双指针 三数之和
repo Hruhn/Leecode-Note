@@ -1,0 +1,71 @@
+给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请
+
+你返回所有和为 0 且不重复的三元组。
+
+注意：答案中不可以包含重复的三元组。
+
+ 
+
+ 
+
+示例 1：
+
+输入：nums = [-1,0,1,2,-1,-4]
+输出：[[-1,-1,2],[-1,0,1]]
+解释：
+nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+注意，输出的顺序和三元组的顺序并不重要。
+示例 2：
+
+输入：nums = [0,1,1]
+输出：[]
+解释：唯一可能的三元组和不为 0 。
+示例 3：
+
+输入：nums = [0,0,0]
+输出：[[0,0,0]]
+解释：唯一可能的三元组和为 0 。
+ 
+
+提示：
+
+3 <= nums.length <= 3000
+-105 <= nums[i] <= 105
+
+
+
+双指针法，时间复杂度o(n^2)， 空间复杂度o(1)：
+将数组排序（1.等值数放到一起，方便跳过，避免出现重复三元组 2.利于后续进行三元组和与0大小比较后的调整操作），
+遍历数组，每次遍历以遍历的值为其中一个元素。
+取数组中当前遍历到的值以后的值为查找另外两个值的范围，取最小值和最大值即查找范围内第一个和最后一个元素。
+当总和大于0时，最大值向后移动值减小，当总和小于0时，最小值向前移动。
+在确定一个满足条件的组合进行下一个组合的查找时，考虑重复元组的情况，对于三个值分别迭代时若相等则跳过到下一个不等值。
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        int left, right;
+        for(int i = 0; i< nums.size(); i++){
+            left = i + 1;
+            right = nums.size() - 1;
+            while(left < right){
+                if(nums[i] + nums[left] + nums[right] > 0) right--;
+                else if(nums[i] + nums[left] + nums[right] < 0) left++;
+                else{
+                    res.push_back(vector<int>{nums[i], nums[left], nums[right]});
+                    while(left < right && nums[left] == nums[left + 1]) left++;
+                    while(right > left && nums[right] == nums[right - 1]) right--;
+                    left++;
+                    right--;
+                }
+            }
+            while(i < nums.size() - 1 && nums[i] == nums[i + 1]) i++;
+        }
+
+        return res;
+    }
+};
