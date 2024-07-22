@@ -1,0 +1,47 @@
+给你四个整数数组 nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l) 能满足：
+
+0 <= i, j, k, l < n
+nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+ 
+
+示例 1：
+
+输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+输出：2
+解释：
+两个元组如下：
+1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+示例 2：
+
+输入：nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
+输出：1
+
+哈希表法，时间复杂度o(n^2)，空间复杂度o(n^2)：
+将数组分为两拨，则有两组数组，每组数组中有两个数组。
+两层遍历第一二个数组，用哈希表的键和值记录下不同数值的和及其出现次数。
+再次遍历低三四个数组，循环中查找哈希表中是否出现了与当前两个数组中分别两个值的的和为相反数的元素，若有，则记录其value。
+最后返回结果计数值。
+
+代码：
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        int len = nums1.size();
+        int count = 0;
+        unordered_map<int, int> records;
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                records[nums1[i] + nums2[j]]++;
+            }
+        }
+
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                if(records.find(-nums3[i] - nums4[j]) != records.end()) count += records[-nums3[i] - nums4[j]];
+            }
+        }
+
+        return count;
+    }
+};
