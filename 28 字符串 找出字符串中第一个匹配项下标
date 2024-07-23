@@ -1,0 +1,56 @@
+给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回  -1 。
+
+ 
+
+示例 1：
+
+输入：haystack = "sadbutsad", needle = "sad"
+输出：0
+解释："sad" 在下标 0 和 6 处匹配。
+第一个匹配项的下标是 0 ，所以返回 0 。
+示例 2：
+
+输入：haystack = "leetcode", needle = "leeto"
+输出：-1
+解释："leeto" 没有在 "leetcode" 中出现，所以返回 -1 。
+ 
+
+提示：
+
+1 <= haystack.length, needle.length <= 104
+haystack 和 needle 仅由小写英文字符组成
+
+
+KMP算法，时间复杂度o(m + n)，空间复杂度o(n)：
+当匹配途中出现当前字符不匹配时，除了简单地重新从下一个字符开始匹配这个简单的方法外，可以利用已经匹配的字符的信心，减少回溯。
+对于模式串进行研究，研究字符串数组每个字符上的最长公共前后缀。
+当字符串与模式串匹配过程中出现不匹配时，查询当前模式串正在匹配的字符前面字符串的最大公共前缀，取其后一位与字符串进行匹配。
+为记录这些前缀信息，创建一个大小为模式串长度的数组，数组中每一位记录着对应下标模式串字串的最大公共前缀长度。
+
+代码实现（该前缀数组中值均减一）：
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int len = needle.size();
+        vector<int> prefix(len, 0);
+
+        prefix[0] = -1;
+        for(int i = 1, j = -1; i < len - 1; i++){
+            while(j >= 0 && needle[i] != needle[j + 1]){
+                j = prefix[j];
+            }
+            if(needle[i] == needle[j + 1]) j++;
+            prefix[i] = j;
+        }
+
+        for(int i = 0, j = -1; i < haystack.size(); i++){
+            while(j >= 0 && haystack[i] != needle[j + 1]){
+                j = prefix[j];
+            }aa
+            if(haystack[i] == needle[j + 1]) j++;
+            if(j == len - 1) return i - len + 1;
+        }
+
+        return -1;
+    }
+};
