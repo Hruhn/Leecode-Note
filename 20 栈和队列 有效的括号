@@ -1,0 +1,57 @@
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+每个右括号都有一个对应的相同类型的左括号。
+ 
+
+示例 1：
+
+输入：s = "()"
+输出：true
+示例 2：
+
+输入：s = "()[]{}"
+输出：true
+示例 3：
+
+输入：s = "(]"
+输出：false
+ 
+
+提示：
+
+1 <= s.length <= 104
+s 仅由括号 '()[]{}' 组成
+
+题解思路，时间复杂度o(n)，空间复杂度o(n):
+用一个栈来记录括号，当遇到左括号时，符号入栈。
+当遇到右括号时，判断当前栈顶是否与当前右括号匹配，若匹配，弹出栈顶元素。若栈没有匹配的括号或者此时栈为空，则匹配失败，返回false。
+若所有符号匹配完之后栈为空则成功，仍有符号则失败。
+
+代码如下：
+class Solution {
+public:
+    stack<char> para;
+    bool isValid(string s) {
+        for(auto c: s){
+            if(c == '(' || c == '{' || c== '[') para.push(c);
+            else if(c == ')'){
+                if(!para.empty() && para.top() == '(') para.pop();
+                else return false;
+            }
+            else if(c == '}'){
+                if(!para.empty() && para.top() == '{') para.pop();
+                else return false;
+            }
+            else if(c == ']'){
+                if(!para.empty() && para.top() == '[') para.pop();
+                else return false;
+            }
+        }
+        if(para.empty()) return true;
+        return false;
+    }
+};
