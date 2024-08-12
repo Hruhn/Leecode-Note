@@ -1,0 +1,72 @@
+给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+
+candidates 中的每个数字在每个组合中只能使用 一次 。
+
+注意：解集不能包含重复的组合。 
+
+ 
+
+示例 1:
+
+输入: candidates = [10,1,2,7,6,1,5], target = 8,
+输出:
+[
+[1,1,6],
+[1,2,5],
+[1,7],
+[2,6]
+]
+示例 2:
+
+输入: candidates = [2,5,2,1,2], target = 5,
+输出:
+[
+[1,2,2],
+[5]
+]
+ 
+
+提示:
+
+1 <= candidates.length <= 100
+1 <= candidates[i] <= 50
+1 <= target <= 30
+
+回溯算法，时间复杂度，空间复杂度：
+树形结构横向同层的节点，为排列组合类别分类，每棵树含义为一定包含根节点并从右边树的根部集合进行取值的排列组合。
+当包含重复元素时，需要对元素进行排列，树同层上需要进行去重，森林里每颗子树，同层节点当前节点等于前面节点时，需要跳过。
+实现这点利用一个布尔值flag进行记录。同层间相同需要跳过，纵向时即进行下层递归时不需跳过。
+
+代码如下：
+
+class Solution {
+    vector<vector<int>> res;
+    vector<int> tmp;
+    int sum;
+    bool flag;
+public:
+    void backtracking(vector<int>& candidates, int target, int startIndex){
+        if(sum == target) res.push_back(tmp);
+        else if(sum > target) return;
+        else{
+            for(int i = startIndex; i < candidates.size(); i++){
+                if(i > 0 && candidates[i] == candidates[i - 1] && !flag) continue;
+                sum += candidates[i];
+                tmp.push_back(candidates[i]);
+                flag = true;
+                backtracking(candidates, target, i + 1);
+                flag = false;
+                sum -= candidates[i];
+                tmp.pop_back();
+            }
+        }
+    }
+
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        flag = false;
+        sum = 0;
+        backtracking(candidates, target, 0);
+        return res;
+    }
+};
