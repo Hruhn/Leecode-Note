@@ -1,0 +1,80 @@
+给定一个二叉树 root ，返回其最大深度。
+
+二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+
+ 
+
+示例 1：
+
+
+
+ 
+
+输入：root = [3,9,20,null,null,15,7]
+输出：3
+示例 2：
+
+输入：root = [1,null,2]
+输出：2
+ 
+
+提示：
+
+树中节点的数量在 [0, 104] 区间内。
+-100 <= Node.val <= 100
+
+迭代法，时间复杂度o(n)，空间复杂度o(n)：
+利用队列记录每层的节点，for循环中处理一层节点，并将它们下一层节点压入队列，在下一次for循环中取出队列中元素，处理下一层的节点。
+
+代码：
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        int depth = 0;
+        if(!root) return depth;
+
+        int cur_num = 1;
+
+        queue<TreeNode*> recd;
+        recd.push(root);
+
+        while(!recd.empty()){
+            cur_num = recd.size();
+            depth++;
+            for(int i = 0; i < cur_num; i++){
+                TreeNode* tmp;
+                tmp = recd.front();
+                if(tmp->left) recd.push(tmp->left);
+                if(tmp->right) recd.push(tmp->right);
+                recd.pop();
+            }
+        }
+        return depth;
+    }
+};
+
+递归法,时间复杂度：o(n), 空间复杂度：o(height)
+利用递归，每节点返回的深度为当前节点最深子树的深度，加上1。递归截至条件为，当节点为空时返回0。
+代码：
+class Solution {
+public:
+    int maxDepth(Node* root) {
+        if (root == 0) return 0;
+        int depth = 0;
+        for (int i = 0; i < root->children.size(); i++) {
+            depth = max (depth, maxDepth(root->children[i]));
+        }
+        return depth + 1;
+    }
+};
