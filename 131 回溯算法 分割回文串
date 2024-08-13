@@ -1,0 +1,54 @@
+给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 
+回文串
+ 。返回 s 所有可能的分割方案。
+
+ 
+
+示例 1：
+
+输入：s = "aab"
+输出：[["a","a","b"],["aa","b"]]
+示例 2：
+
+输入：s = "a"
+输出：[["a"]]
+ 
+
+提示：
+
+1 <= s.length <= 16
+s 仅由小写英文字母组成
+
+
+回溯算法， 时间复杂度，空间复杂度：
+对一个字符串进行回文子串分割，遍历从头开始每个长度的字串，符合要求的字串压入结果数组中，将后面的字串送入自身递归函数中。
+当下一层递归返回时，结果数组pop当前符合条件的字串，查找下一字串。
+横向遍历取原字符串第一个字符开始每个长度的字串，纵向查看剩下字符串中回文子串的组合。
+
+代码：
+class Solution {
+    vector<vector<string>> res;
+    vector<string> tmp;
+public:
+    void backtracking(string s, int startindex){
+        if(startindex == s.size()){
+            res.push_back(tmp);
+            return;
+        }
+        for(int i = 1; i <= s.size() - startindex; i++){
+            string tmp_str = s.substr(startindex, i);
+            string rvs_str = tmp_str;
+            reverse(rvs_str.begin(), rvs_str.end());
+            if(rvs_str == tmp_str){
+                tmp.push_back(tmp_str);
+                backtracking(s, startindex + i);
+                tmp.pop_back();
+            }
+        }
+    }
+
+    vector<vector<string>> partition(string s) {
+        backtracking(s, 0);
+        return res;
+    }
+};
